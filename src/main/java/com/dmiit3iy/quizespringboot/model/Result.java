@@ -6,10 +6,12 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -41,10 +43,13 @@ public class Result {
     @JsonProperty("correct_answer")
     private String correctAnswer;
     @JsonProperty("incorrect_answers")
+
     @ElementCollection
+    @CollectionTable(name = "incorrectAnswers", joinColumns = @JoinColumn(name = "result_id"))
+    @Cascade(value = org.hibernate.annotations.CascadeType.DELETE)
     private List<String> incorrectAnswers = new ArrayList<>();
-
-
-
-
+    @ManyToOne
+   // @JoinColumn(name = "responseResult_id", nullable = false)
+    @JoinColumn(name = "responseResult_id")
+    private ResponseResultTrivia responseResult;
 }
