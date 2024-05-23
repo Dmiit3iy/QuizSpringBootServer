@@ -1,8 +1,10 @@
 package com.dmiit3iy.quizespringboot.controller;
 
+import com.dmiit3iy.quizespringboot.model.Exercise;
 import com.dmiit3iy.quizespringboot.model.Gamer;
 import com.dmiit3iy.quizespringboot.model.ResponseResultTrivia;
 import com.dmiit3iy.quizespringboot.model.Result;
+import com.dmiit3iy.quizespringboot.service.ExerciseService;
 import com.dmiit3iy.quizespringboot.service.GamerService;
 import com.dmiit3iy.quizespringboot.service.ResponseResultTriviaService;
 
@@ -27,6 +29,12 @@ public class ResultController {
     private static final Logger logger = LoggerFactory.getLogger(ResultController.class);
     private ResponseResultTriviaService responseResultTriviaService;
     private GamerService gamerService;
+    private ExerciseService exerciseService;
+
+    @Autowired
+    public void setExerciseService(ExerciseService exerciseService) {
+        this.exerciseService = exerciseService;
+    }
 
     private ResultService resultService;
 
@@ -48,13 +56,16 @@ public class ResultController {
     @GetMapping("/{id}")
     public ResponseEntity<ResponseResultTrivia> get(@PathVariable("id") long id, @RequestParam String amount, @RequestParam String category,
                                                     @RequestParam String difficulty) {
+        Exercise exercise = new Exercise(amount, category, difficulty);
         Gamer gamer = gamerService.get(id);
+        exercise.setGamer(gamer);
+        exerciseService.add(exercise);
         ResponseResultTrivia responseResult = responseResultTriviaService.get(amount, category, difficulty);
         responseResult.setGamer(gamer);
-       ResponseResultTrivia responseResultTriviaNew= responseResultTriviaService.add(responseResult);
+        ResponseResultTrivia responseResultTriviaNew = responseResultTriviaService.add(responseResult);
         List<Result> list = responseResult.getResults();
         LocalDateTime ld = LocalDateTime.now();
-        logger.info("Туц",ld);
+        logger.info("Туц", ld);
         for (Result x : list) {
             logger.trace("Зашли в метод добавления");
             x.setResponseResult(responseResultTriviaNew);

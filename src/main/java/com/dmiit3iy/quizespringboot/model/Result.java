@@ -3,9 +3,7 @@ package com.dmiit3iy.quizespringboot.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
@@ -52,4 +50,11 @@ public class Result {
    // @JoinColumn(name = "responseResult_id", nullable = false)
     @JoinColumn(name = "responseResult_id")
     private ResponseResultTrivia responseResult;
+
+
+
+    @ToString.Exclude
+    @OneToOne(mappedBy = "result", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Answer answer;
 }

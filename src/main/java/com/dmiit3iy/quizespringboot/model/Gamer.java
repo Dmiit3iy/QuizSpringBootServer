@@ -1,15 +1,10 @@
 package com.dmiit3iy.quizespringboot.model;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import com.dmiit3iy.quizespringboot.service.ExerciseService;
+import lombok.*;
 import org.hibernate.annotations.Cascade;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,4 +21,8 @@ public class Gamer extends User {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "gamer")
     @Cascade(value = org.hibernate.annotations.CascadeType.DELETE)
     List<Exercise> exercises = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gamer")
+    @Cascade(value = org.hibernate.annotations.CascadeType.DELETE)
+    private List<Answer> answer;
 }
