@@ -23,5 +23,11 @@ public class ResultServiceImpl implements ResultService {
             throw new IllegalArgumentException("Такой вопрос уже добавлен!");
         }
     }
+
+    @Override
+    public Result get(long id) {
+
+        return resultRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Нет вопроса с таким ID"));
+    }
 }
 

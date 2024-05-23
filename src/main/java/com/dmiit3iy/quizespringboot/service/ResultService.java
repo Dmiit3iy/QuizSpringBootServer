@@ -4,4 +4,5 @@ import com.dmiit3iy.quizespringboot.model.Result;
 
 public interface ResultService {
     void add(Result result);
+    Result get(long id);
 }
