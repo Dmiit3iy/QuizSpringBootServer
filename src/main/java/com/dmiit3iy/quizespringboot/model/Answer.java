@@ -1,6 +1,7 @@
 package com.dmiit3iy.quizespringboot.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,11 +24,14 @@ public class Answer {
     private boolean isRight;
     @NonNull
     @ToString.Exclude
+    @JsonIgnore
     @OneToOne
     @MapsId
     @JoinColumn(name = "result_id")
     private Result result;
     @NonNull
+    @JsonIgnore
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "gamer_id")
     private Gamer gamer;

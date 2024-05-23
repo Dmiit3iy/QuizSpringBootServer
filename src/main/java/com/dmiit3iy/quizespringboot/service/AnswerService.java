@@ -9,4 +9,5 @@ public interface AnswerService {
     void add(Answer answer);
     Answer get(long id);
     List<Answer> get(Gamer gamer);
+
 }
