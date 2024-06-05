@@ -18,17 +18,11 @@ import java.util.List;
 @RequestMapping("/answer")
 public class AnswerController {
     private AnswerService answerService;
-    private ResultService resultService;
     private GamerService gamerService;
 
     @Autowired
     public void setGamerService(GamerService gamerService) {
         this.gamerService = gamerService;
-    }
-
-    @Autowired
-    public void setResultService(ResultService resultService) {
-        this.resultService = resultService;
     }
 
     @Autowired
@@ -39,11 +33,7 @@ public class AnswerController {
     @PostMapping("/{idResult}")
     public ResponseEntity<ResponseResult<Answer>> post(@PathVariable("idResult") long idResult, @RequestParam("answer") String answer) {
         try {
-            Result result = resultService.get(idResult);
-            Gamer gamer = result.getResponseResult().getGamer();
-            Answer ans = new Answer(answer, result, gamer);
-            ans.setRight(ans.check(answer));
-            this.answerService.add(ans);
+            Answer ans = answerService.add(idResult, answer);
             return new ResponseEntity<>(new ResponseResult(ans, null), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(new ResponseResult<>(null, e.getMessage()), HttpStatus.BAD_REQUEST);
@@ -55,9 +45,9 @@ public class AnswerController {
         try {
             Gamer gamer = gamerService.get(idGamer);
             List<Answer> list = answerService.get(gamer);
-            return new ResponseEntity<>(new ResponseResult(list, null), HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseResult<>(list, null), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(new ResponseResult(null, e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResponseResult<>(null, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 }

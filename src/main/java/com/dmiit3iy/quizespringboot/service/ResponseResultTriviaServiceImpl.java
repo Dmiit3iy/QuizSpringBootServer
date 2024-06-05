@@ -1,5 +1,7 @@
 package com.dmiit3iy.quizespringboot.service;
 
+import com.dmiit3iy.quizespringboot.model.Exercise;
+import com.dmiit3iy.quizespringboot.model.Gamer;
 import com.dmiit3iy.quizespringboot.model.ResponseResultTrivia;
 import com.dmiit3iy.quizespringboot.model.Result;
 import com.dmiit3iy.quizespringboot.repository.ResponseResultTriviaRepository;
@@ -17,6 +19,18 @@ import java.util.List;
 public class ResponseResultTriviaServiceImpl implements ResponseResultTriviaService {
     private ResponseResultTriviaRepository responseResultTriviaRepository;
     private ResultService resultService;
+    private GamerService gamerService;
+    private ExerciseService exerciseService;
+
+    @Autowired
+    public void setExerciseService(ExerciseService exerciseService) {
+        this.exerciseService = exerciseService;
+    }
+
+    @Autowired
+    public void setGamerService(GamerService gamerService) {
+        this.gamerService = gamerService;
+    }
 
     @Autowired
     public void setResultService(ResultService resultService) {
@@ -42,13 +56,38 @@ public class ResponseResultTriviaServiceImpl implements ResponseResultTriviaServ
     }
 
     @Override
+    public ResponseResultTrivia getWithId(long id, String amount, String category, String difficulty) {
+        Exercise exercise = new Exercise(amount, category, difficulty);
+        Gamer gamer = gamerService.get(id);
+
+        exercise.setGamer(gamer);
+        exerciseService.add(exercise);
+
+        ResponseResultTrivia responseResult = this.get(amount, category, difficulty);
+        responseResult.setGamer(gamer);
+        //сохранил в БД
+        ResponseResultTrivia responseResultTriviaNew = this.add(responseResult);
+
+        List<Result> list = responseResult.getResults();
+        for (Result x : list) {
+            // Каждому заданию проставляю связку с полученным ответом от сервера
+            x.setResponseResult(responseResultTriviaNew);
+            resultService.add(x);
+        }
+        //  responseResult.setGamer(gamer);
+        responseResultTriviaNew.setGamer(gamer);
+        gamerService.update(gamer);
+        return responseResultTriviaNew;
+    }
+
+    @Override
     public ResponseResultTrivia add(ResponseResultTrivia responseResult) {
         try {
 //            List<Result> resultList = responseResult.getResults();
 //            for (Result x : resultList) {
 //                resultService.add(x);
 //            }
-          return responseResultTriviaRepository.save(responseResult);
+            return responseResultTriviaRepository.save(responseResult);
 
         } catch (DataIntegrityViolationException e) {
             //подумать над тем какая здесь ошибка может быть? какое условие уникальности

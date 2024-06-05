@@ -41,7 +41,6 @@ public class Result {
     @JsonProperty("correct_answer")
     private String correctAnswer;
     @JsonProperty("incorrect_answers")
-
     @ElementCollection
     @CollectionTable(name = "incorrectAnswers", joinColumns = @JoinColumn(name = "result_id"))
     @Cascade(value = org.hibernate.annotations.CascadeType.DELETE)
